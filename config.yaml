@@ -1,0 +1,70 @@
+# Benchmark Configuration File
+
+# Output directory for results (will be created if it doesn't exist)
+output_dir: "result"
+
+# Network Benchmark Configuration (both sequential and concurrent)
+network:
+  enabled: true
+  configurations:
+    # Sequential (single client)
+    - clients: 1
+      requests_per_client: 1000
+    - clients: 1
+      requests_per_client: 10000
+    - clients: 1
+      requests_per_client: 100000
+    # Concurrent (multiple clients)
+    - clients: 10
+      requests_per_client: 100
+    - clients: 50
+      requests_per_client: 100
+    - clients: 100
+      requests_per_client: 1000
+    - clients: 500
+      requests_per_client: 5000
+
+# CPU Benchmark Configuration
+cpu:
+  enabled: true
+  iterations:
+    - 100000000
+    - 1000000000
+
+# Memory Benchmark Configuration
+memory:
+  enabled: true
+  sizes_mb:
+    - 512
+    - 1024
+    - 2048
+    - 4096
+    - 8192
+
+# Disk I/O Benchmark Configuration
+disk_io:
+  enabled: true
+  configurations:
+    - file_size_mb: 50
+      num_files: 2
+    - file_size_mb: 100
+      num_files: 5
+    - file_size_mb: 500
+      num_files: 10
+    - file_size_mb: 1000
+      num_files: 20
+    - file_size_mb: 2000
+      num_files: 50
+
+# Attestation Benchmark Configuration
+attestation:
+  enabled: true
+  configurations:
+    - clients: 1
+      requests_per_client: 10
+    - clients: 1
+      requests_per_client: 100
+    - clients: 10
+      requests_per_client: 100
+    - clients: 100
+      requests_per_client: 1000
