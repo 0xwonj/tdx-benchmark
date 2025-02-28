@@ -1,13 +1,11 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
@@ -67,11 +65,6 @@ func main() {
 	// Wait for interrupt signal
 	<-stop
 	log.Println("Shutting down server gracefully...")
-
-	// Create a context with timeout for shutdown
-	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
 
 	// Gracefully stop the gRPC server
 	grpcServer.GracefulStop()
