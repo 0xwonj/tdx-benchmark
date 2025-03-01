@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/0xwonj/tdx-benchmark/proto/attest"
+	attestpb "github.com/0xwonj/tdx-benchmark/proto/attest"
 	"github.com/google/go-tdx-guest/client"
 	tdxpb "github.com/google/go-tdx-guest/proto/tdx"
 	"google.golang.org/grpc/codes"
@@ -14,7 +14,7 @@ import (
 
 // Server implements the AttestService gRPC server
 type Server struct {
-	pb.UnimplementedAttestServiceServer
+	attestpb.UnimplementedAttestServiceServer
 	quoteProvider client.QuoteProvider
 	useMock       bool
 }
@@ -62,7 +62,7 @@ func NewServer() (*Server, error) {
 }
 
 // GetQuote implements the GetQuote RPC method
-func (s *Server) GetQuote(ctx context.Context, req *pb.GetQuoteRequest) (*pb.GetQuoteResponse, error) {
+func (s *Server) GetQuote(ctx context.Context, req *attestpb.GetQuoteRequest) (*attestpb.GetQuoteResponse, error) {
 	// The go-tdx-guest library expects a 64-byte report data
 	var reportData [64]byte
 	
@@ -112,7 +112,7 @@ func (s *Server) GetQuote(ctx context.Context, req *pb.GetQuoteRequest) (*pb.Get
 	// Convert the go-tdx-guest QuoteV4 to our proto Quote format using the utility function
 	quote := ConvertQuoteV4ToQuote(quoteV4)
 	
-	return &pb.GetQuoteResponse{
+	return &attestpb.GetQuoteResponse{
 		Quote: quote,
 	}, nil
 }

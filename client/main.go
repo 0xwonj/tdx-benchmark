@@ -317,8 +317,25 @@ func writeBenchmarkCSV(benchmarkType string, results []BenchmarkResult, outputDi
 		sort.Strings(paramNames) // Sort parameter names for consistent order
 	}
 	
+	// Determine the throughput metric name based on benchmark type
+	var throughputMetric string
+	switch {
+	case strings.Contains(benchmarkType, "Network"):
+		throughputMetric = "Throughput (req/s)"
+	case strings.Contains(benchmarkType, "CPU"):
+		throughputMetric = "Iterations Per Second"
+	case strings.Contains(benchmarkType, "Memory"):
+		throughputMetric = "Average Time Per Page (ns)" // Not exactly throughput, but a performance metric
+	case strings.Contains(benchmarkType, "Disk"):
+		throughputMetric = "Throughput (MB/s)"
+	case strings.Contains(benchmarkType, "Attestation"):
+		throughputMetric = "Throughput (quotes/s)"
+	default:
+		throughputMetric = "Throughput"
+	}
+	
 	// Write CSV header
-	header := append(paramNames, "Duration (seconds)")
+	header := append(paramNames, "Duration (seconds)", throughputMetric)
 	if _, err := file.WriteString(strings.Join(header, ",") + "\n"); err != nil {
 		return fmt.Errorf("writing header: %w", err)
 	}
@@ -338,6 +355,13 @@ func writeBenchmarkCSV(benchmarkType string, results []BenchmarkResult, outputDi
 		
 		// Add duration in seconds
 		row = append(row, fmt.Sprintf("%.6f", result.Duration.Seconds()))
+		
+		// Add throughput value
+		if throughputValue, exists := result.Metrics[throughputMetric]; exists {
+			row = append(row, fmt.Sprintf("%v", throughputValue))
+		} else {
+			row = append(row, "N/A")
+		}
 		
 		// Write the row
 		if _, err := file.WriteString(strings.Join(row, ",") + "\n"); err != nil {
